@@ -418,7 +418,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     
     private func fetchImageAndCrop(for asset: PHAsset,
                                    withCropRect: CGRect? = nil,
-                                   callback: @escaping (_ photo: UIImage, _ exif: [String: Any]) -> Void) {
+                                   callback: @escaping (_ photo: UIImage, _ exif: [String: Any], url: URL?) -> Void) {
         delegate?.libraryViewDidTapNext()
         let cropRect = withCropRect ?? DispatchQueue.main.sync { v.currentCropRect() }
         let ts = targetSize(for: asset, cropRect: cropRect)
@@ -500,9 +500,9 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
                     
                     switch asset.asset.mediaType {
                     case .image:
-                        self.fetchImageAndCrop(for: asset.asset, withCropRect: asset.cropRect) { image, exifMeta in
+                        self.fetchImageAndCrop(for: asset.asset, withCropRect: asset.cropRect) { (image, exifMeta, url) in
                             let photo = YPMediaPhoto(image: image.resizedImageIfNeeded(),
-													 exifMeta: exifMeta, asset: asset.asset)
+													 exifMeta: exifMeta, asset: asset.asset, url: url)
                             resultMediaItems.append(YPMediaItem.photo(p: photo))
                             asyncGroup.leave()
                         }
